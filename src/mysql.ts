@@ -35,7 +35,12 @@ type MySqlError = Error & {
 class MySqlQueryable<ClientT extends Pool | PoolConnection> implements Queryable {
   readonly provider = "mysql";
 
-  constructor(protected readonly client: ClientT) {}
+  readonly declare adapterName: string & {}
+
+  constructor(protected readonly client: ClientT) {
+    this.adapterName = "prisma-mysql-adapter"
+  }
+  
 
   /**
    * Execute a query given as SQL, interpolating the given parameters.
@@ -125,9 +130,14 @@ class MySqlQueryable<ClientT extends Pool | PoolConnection> implements Queryable
 }
 
 class MySqlTransaction extends MySqlQueryable<PoolConnection> implements Transaction {
+  readonly declare adapterName: string & {}
+
   constructor(client: PoolConnection, readonly options: TransactionOptions) {
     super(client);
+     this.adapterName = "prisma-mysql-adapter"
   }
+  
+
 
   async commit(): Promise<Result<void>> {
     debug(`[js::commit]`);
@@ -149,8 +159,11 @@ export type PrismaMySqlOptions = {
 };
 
 export class PrismaMySql extends MySqlQueryable<Pool> implements DriverAdapter {
+  readonly declare adapterName: string & {}
+
   constructor(client: Pool, private options?: PrismaMySqlOptions) {
     super(client);
+    this.adapterName = "prisma-mysql-adapter"
   }
 
   getConnectionInfo(): Result<ConnectionInfo> {
