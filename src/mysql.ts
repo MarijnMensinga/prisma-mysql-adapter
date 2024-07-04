@@ -28,7 +28,8 @@ type QueryResult<T> = {
 };
 
 type MySqlError = Error & {
-  code?: number;
+  code?: string;
+  errno: number;
   state: string;
 };
 
@@ -113,18 +114,34 @@ class MySqlQueryable<ClientT extends Pool | PoolConnection> implements Queryable
     try {
       const [data, fields = []] = await this.client.query<T>(options);
       return ok({ data, fields });
-    } catch (e) {
-      const error = e as MySqlError;
+    } catch (e: any) {
+      const error = e as any;
+
       debug("Error in performIO: %O", error);
-      if (error?.code) {
-        return err({
-          kind: "Mysql",
-          code: error.code,
-          message: error.message,
-          state: error.state,
-        });
-      }
-      throw error;
+
+      Object.assign(e,{
+        kind: "Mysql",
+        code_name: e.code,
+        code: error.errno,
+        message: error.message,
+        state: error.state,
+        meta: {
+          ...error,
+          code_name: e.code,
+          code: error.errno,
+        },
+      })
+
+      // if (error?.errno) {
+      //   return err({
+      //     kind: "Mysql",
+      //     code: error.errno,
+      //     message: error.message,
+      //     state: error.state,
+      //   });
+      // }
+
+      throw e;
     }
   }
 }

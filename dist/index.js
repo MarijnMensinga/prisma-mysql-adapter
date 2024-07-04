@@ -261,15 +261,19 @@ var MySqlQueryable = class {
     } catch (e) {
       const error = e;
       debug("Error in performIO: %O", error);
-      if (error?.code) {
-        return (0, import_driver_adapter_utils2.err)({
-          kind: "Mysql",
-          code: error.code,
-          message: error.message,
-          state: error.state
-        });
-      }
-      throw error;
+      Object.assign(e, {
+        kind: "Mysql",
+        code_name: e.code,
+        code: error.errno,
+        message: error.message,
+        state: error.state,
+        meta: {
+          ...error,
+          code_name: e.code,
+          code: error.errno
+        }
+      });
+      throw e;
     }
   }
 };
