@@ -21,15 +21,15 @@
   "author": "Federico Babrauskas <fedebabrauskas@gmail.com>",
   "license": "Apache-2.0",
   "dependencies": {
-    "@prisma/driver-adapter-utils": "^5.10.1"
+    "@prisma/driver-adapter-utils": "6.5.0"
   },
   "devDependencies": {
     "@types/node": "^20.11.19",
-    "mysql2": "^3.9.1",
-    "tsup": "^8.0.2",
-    "typescript": "^5.3.3"
+    "mysql2": "3.14.0",
+    "tsup": "8.4.0",
+    "typescript": "5.8.2"
   },
   "peerDependencies": {
-    "mysql2": "^3.9.1"
+    "mysql2": "3.14.0"
   }
 }
